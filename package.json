@@ -33,8 +33,8 @@
   },
   "license": "MIT",
   "bin": {
-    "cbr": "./build/cli/cli.js",
-    "cognito-bak-res": "./build/cli/cli.js"
+    "cbr": "./build/cli/cli.ts",
+    "cognito-bak-res": "./build/cli/cli.ts"
   },
   "files": [
     "build"
