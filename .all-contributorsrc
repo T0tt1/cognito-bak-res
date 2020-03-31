@@ -1,0 +1,25 @@
+{
+  "projectName": "cognito-bak-res",
+  "projectOwner": "T0tt1",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+        {
+      "login": "ashishkujoy",
+      "name": "ashish kumar ",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/49184867?s=460&u=3727c81a011775d9479cd40e1ce7cbfcb36e19f6&v=4",
+      "profile": "https://github.com/T0tt1",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 1,
+  "skipCi": true
+}

@@ -1,0 +1,10 @@
+src/
+gifs/
+build/cli/*.d.ts
+
+.vscode
+.DS_Store
+
+npm-shrinkwrap.json
+package-lock.json
+yarn.lock

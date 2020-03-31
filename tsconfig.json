@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es6", "dom", "esnext.asynciterable", "es7"],
+    "moduleResolution": "node",
+    "rootDir": "./src/",
+    "outDir": "build",
+    "noImplicitAny": true,
+    "declaration": true,
+    // "noUnusedLocals": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "noImplicitReturns": true,
+    "preserveConstEnums": true,
+    "forceConsistentCasingInFileNames": true,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "exclude": ["node_modules", "build"]
+}
