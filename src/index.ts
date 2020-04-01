@@ -57,6 +57,8 @@ export const backupUsers = async (
               UserPoolId: poolId
             })
             .promise();
+            console.log(user)
+            console.log(user.Groups)  
           stringify.write(user as string);
         });
         if (PaginationToken) {
