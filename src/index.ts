@@ -81,6 +81,7 @@ export const backupUsers = async (
         writeStream.end();
         console.log('it works');
       });
+      console.log('it works2');
     }
   }
 };
