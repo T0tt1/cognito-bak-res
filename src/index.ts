@@ -17,7 +17,6 @@ export const backupUsers = async (
   directory: string,
   delayDurationInMillis: number = 0
 ) => {
-  console.log("Hello - updated");
   let userPoolList: string[] = [];
 
   if (UserPoolId == "all") {
@@ -59,7 +58,7 @@ export const backupUsers = async (
                 Username: user.Username,
                 UserPoolId: poolId,
               })
-              .promise();
+              .promise().then(data => data.Groups);
             stringify.write(user as string);
           })
         );
@@ -74,21 +73,14 @@ export const backupUsers = async (
       };
 
       await paginationCalls();
-      console.log("Call end");
     } catch (error) {
-      console.log(`Error`, error);
       throw error; // to be catched by calling function
     } finally {
-      console.log("I am in finally");
       stringify.end();
       stringify.on("end", () => {
         writeStream.end();
-        console.log("it works");
       });
-      console.log("it works2");
     }
-
-    console.log("it works3");
   }
 };
 
