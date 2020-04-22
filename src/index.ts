@@ -51,17 +51,19 @@ export const backupUsers = async (
         const { Users = [], PaginationToken } = await cognito
           .listUsers(params)
           .promise();
-        Users.forEach(async (user: any) => {
-          user.Groups = await cognito
-            .adminListGroupsForUser({
-              Username: user.Username,
-              UserPoolId: poolId,
-            })
-            .promise();
-          console.log(user);
-          console.log(user.Groups);
-          stringify.write(user as string);
-        });
+
+        await Promise.all(
+          Users.map(async (user: any) => {
+            user.Groups = await cognito
+              .adminListGroupsForUser({
+                Username: user.Username,
+                UserPoolId: poolId,
+              })
+              .promise();
+            stringify.write(user as string);
+          })
+        );
+
         if (PaginationToken) {
           params.PaginationToken = PaginationToken;
           if (delayDurationInMillis > 0) {
@@ -72,20 +74,21 @@ export const backupUsers = async (
       };
 
       await paginationCalls();
-      console.log('Call end');
+      console.log("Call end");
     } catch (error) {
       console.log(`Error`, error);
       throw error; // to be catched by calling function
     } finally {
+      console.log("I am in finally");
       stringify.end();
       stringify.on("end", () => {
         writeStream.end();
-        console.log('it works');
+        console.log("it works");
       });
-      console.log('it works2');
+      console.log("it works2");
     }
 
-    console.log('it works3');
+    console.log("it works3");
   }
 };
 
