@@ -17,7 +17,7 @@ export const backupUsers = async (
   directory: string,
   delayDurationInMillis: number = 0
 ) => {
-  console.log('Hello');
+  console.log("Hello");
   let userPoolList: string[] = [];
 
   if (UserPoolId == "all") {
@@ -26,7 +26,7 @@ export const backupUsers = async (
       .listUserPools({ MaxResults: 60 })
       .promise();
     userPoolList = userPoolList.concat(
-      UserPools && (UserPools.map(el => el.Id as string) as any)
+      UserPools && (UserPools.map((el) => el.Id as string) as any)
     );
   } else {
     userPoolList.push(UserPoolId);
@@ -43,7 +43,7 @@ export const backupUsers = async (
     stringify.pipe(writeStream);
 
     const params: ListUsersRequestTypes = {
-      UserPoolId: poolId
+      UserPoolId: poolId,
     };
 
     try {
@@ -55,11 +55,11 @@ export const backupUsers = async (
           user.Groups = await cognito
             .adminListGroupsForUser({
               Username: user.Username,
-              UserPoolId: poolId
+              UserPoolId: poolId,
             })
             .promise();
-            console.log(user)
-            console.log(user.Groups)  
+          console.log(user);
+          console.log(user.Groups);
           stringify.write(user as string);
         });
         if (PaginationToken) {
@@ -73,11 +73,13 @@ export const backupUsers = async (
 
       await paginationCalls();
     } catch (error) {
+      console.log(`Error`, error);
       throw error; // to be catched by calling function
     } finally {
       stringify.end();
       stringify.on("end", () => {
         writeStream.end();
+        console.log('it works');
       });
     }
   }
@@ -115,11 +117,15 @@ export const restoreUsers = async (
       const params: AdminCreateUserRequest = {
         UserPoolId,
         Username: user.Username,
-        UserAttributes: attributes
+        UserAttributes: attributes,
       };
 
       // Set Username as an email if UsernameAttributes of UserPool contains an email
-      if (UsernameAttributes.some((Attributes: any) => Attributes.Name === "email")) {
+      if (
+        UsernameAttributes.some(
+          (Attributes: any) => Attributes.Name === "email"
+        )
+      ) {
         params.Username = pluckValue(user.Attributes, "email") as string;
         params.DesiredDeliveryMediums = ["EMAIL"];
       } else if (
@@ -162,7 +168,7 @@ export const restoreUsers = async (
               .adminAddUserToGroup({
                 GroupName: group.GroupName,
                 Username: user.UserName,
-                UserPoolId: group.UserPoolId
+                UserPoolId: group.UserPoolId,
               })
               .promise();
           })
