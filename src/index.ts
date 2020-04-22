@@ -17,6 +17,7 @@ export const backupUsers = async (
   directory: string,
   delayDurationInMillis: number = 0
 ) => {
+  console.log('Hello');
   let userPoolList: string[] = [];
 
   if (UserPoolId == "all") {
