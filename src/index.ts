@@ -117,13 +117,13 @@ export const restoreUsers = async (
         UserAttributes: attributes
       };
 
-      // Set Username as email if UsernameAttributes of UserPool contains email
-      if (UsernameAttributes.some(Attributes => Attributes.Name === "email")) {
+      // Set Username as an email if UsernameAttributes of UserPool contains an email
+      if (UsernameAttributes.some((Attributes: any) => Attributes.Name === "email")) {
         params.Username = pluckValue(user.Attributes, "email") as string;
         params.DesiredDeliveryMediums = ["EMAIL"];
       } else if (
         UsernameAttributes.some(
-          Attributes => Attributes.Name === "phone_number"
+          (Attributes: any) => Attributes.Name === "phone_number"
         )
       ) {
         params.Username = pluckValue(user.Attributes, "phone_number") as string;
