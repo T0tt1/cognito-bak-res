@@ -17,7 +17,7 @@ export const backupUsers = async (
   directory: string,
   delayDurationInMillis: number = 0
 ) => {
-  console.log("Hello");
+  console.log("Hello - updated");
   let userPoolList: string[] = [];
 
   if (UserPoolId == "all") {
@@ -72,6 +72,7 @@ export const backupUsers = async (
       };
 
       await paginationCalls();
+      console.log('Call end');
     } catch (error) {
       console.log(`Error`, error);
       throw error; // to be catched by calling function
@@ -83,6 +84,8 @@ export const backupUsers = async (
       });
       console.log('it works2');
     }
+
+    console.log('it works3');
   }
 };
 
