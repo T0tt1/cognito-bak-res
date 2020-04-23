@@ -119,6 +119,8 @@ export const restoreUsers = async (
         UserAttributes: attributes,
       };
 
+      console.log(UsernameAttributes);
+
       // Set Username as an email if UsernameAttributes of UserPool contains an email
       if (
         UsernameAttributes.some(
