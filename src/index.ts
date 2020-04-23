@@ -176,7 +176,7 @@ export const restoreUsers = async (
             return cognito
               .adminAddUserToGroup({
                 GroupName: group.GroupName,
-                Username: user.UserName,
+                Username: params.Username,
                 UserPoolId: group.UserPoolId,
               })
               .promise();
