@@ -76,7 +76,7 @@ cbr <command> [options]
   cbr backup
   cbr backup <options>
   ```
-  Example: cognito-bak-res backup --pool us-east-1_XXXxxxxX --key YourProgramaticKeyForAWS --secret YourProgramatciSecretForAWS --r us-east-1 --dir .
+  <b>Example:</b><br><i> cognito-bak-res backup --pool us-east-1_XXXxxxxX --key YourProgramaticKeyForAWS --secret YourProgramatciSecretForAWS --r us-east-1 --dir . </i>
   ```
   `--directory` option is available to export json data to.
 
@@ -86,7 +86,7 @@ cbr <command> [options]
   cbr restore
   cbr restore <options>
   ```
-  Example: cognito-bak-res restore --pool us-east-1_XXXxxxxX --key YourProgramaticKeyForAWS --secret YourProgramatciSecretForAWS --r us-east-1 --file .\us-east-1_YYyyyyyyyy.json
+  <b>Example:</b><br><i>  cognito-bak-res restore --pool us-east-1_XXXxxxxX --key YourProgramaticKeyForAWS --secret YourProgramatciSecretForAWS --r us-east-1 --file .\us-east-1_YYyyyyyyyy.json</i>
   ```
   `--file` option is available to read the json file to import from.
 
