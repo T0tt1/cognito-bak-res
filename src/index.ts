@@ -125,7 +125,9 @@ export const restoreUsers = async (
           (Attributes: any) => Attributes.Name === "email"
         )
       ) {
+        console.log('Yep, I am here');
         params.Username = pluckValue(user.Attributes, "email") as string;
+        console.log('Value', pluckValue(user.Attributes, "email") as string);
         params.DesiredDeliveryMediums = ["EMAIL"];
       } else if (
         UsernameAttributes.some(
@@ -136,6 +138,7 @@ export const restoreUsers = async (
         params.DesiredDeliveryMediums = ["EMAIL", "SMS"];
       }
 
+      console.log(params);
       // If password module is specified, use it silently
       // if not provided or it throws, we fallback to password if provided
       // if password is provided, use it silently
