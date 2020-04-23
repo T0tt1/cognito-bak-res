@@ -92,6 +92,7 @@ export const restoreUsers = async (
   passwordModulePath?: String,
   delayDurationInMillis: number = 0
 ) => {
+  console.log('User Pool', UserPoolId);
   if (UserPoolId == "all")
     throw Error(`'all' is not a acceptable value for UserPoolId`);
   let pwdModule: any = null;
@@ -140,7 +141,6 @@ export const restoreUsers = async (
         params.DesiredDeliveryMediums = ["EMAIL", "SMS"];
       }
 
-      console.log(params);
       // If password module is specified, use it silently
       // if not provided or it throws, we fallback to password if provided
       // if password is provided, use it silently
@@ -168,16 +168,11 @@ export const restoreUsers = async (
         await wrapped();
         await Promise.all(
           user.Groups.map((group: any) => {
-            console.log('Here!', {
-              GroupName: group.GroupName,
-              Username: user.UserName,
-              UserPoolId: group.UserPoolId,
-            })
             return cognito
               .adminAddUserToGroup({
                 GroupName: group.GroupName,
                 Username: params.Username,
-                UserPoolId: group.UserPoolId,
+                UserPoolId: params.UserPoolId,
               })
               .promise();
           })
