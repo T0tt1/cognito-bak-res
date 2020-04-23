@@ -115,7 +115,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/all-contri
 <table>
   <tr>
     <td align="center"><a href="https://github.com/yavorss"><img src="https://avatars1.githubusercontent.com/u/16567086?s=460&u=30627428758cbe90d2e5bc9169bbb9cf37fc44a0&v=4" width="100px;" alt=""/><br /><sub><b>Yavor Stoychev</b></sub></a><br /><a href="https://github.com/T0tt1/cognito-bak-res/commits?author=t0tt1" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/t0tt1"><img src="https://avatars2.githubusercontent.com/u/49184867?s=460&u=3727c81a011775d9479cd40e1ce7cbfcb36e19f6&v=4" width="100px;" alt=""/><br /><sub><b>juno-visualsquares</b></sub></a><br /><a href="https://github.com/T0tt1/cognito-bak-res/commits?author=t0tt1" title="Documentation">📖</a> <a href="#ideas-totti" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/t0tt1"><img src="https://avatars2.githubusercontent.com/u/49184867?s=460&u=3727c81a011775d9479cd40e1ce7cbfcb36e19f6&v=4" width="100px;" alt=""/><br /><sub><b>Todor Todorov</b></sub></a><br /><a href="https://github.com/T0tt1/cognito-bak-res/commits?author=t0tt1" title="Documentation">📖</a> <a href="#ideas-totti" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
