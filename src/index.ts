@@ -92,7 +92,6 @@ export const restoreUsers = async (
   passwordModulePath?: String,
   delayDurationInMillis: number = 0
 ) => {
-  console.log('User Pool', UserPoolId);
   if (UserPoolId == "all")
     throw Error(`'all' is not a acceptable value for UserPoolId`);
   let pwdModule: any = null;
@@ -120,7 +119,6 @@ export const restoreUsers = async (
         UserAttributes: attributes,
       };
 
-      console.log(UsernameAttributes);
 
       // Set Username as an email if UsernameAttributes of UserPool contains an email
       if (
@@ -128,9 +126,7 @@ export const restoreUsers = async (
           (Attributes: any) => Attributes.Name === "email"
         )
       ) {
-        console.log('Yep, I am here');
         params.Username = pluckValue(user.Attributes, "email") as string;
-        console.log('Value', pluckValue(user.Attributes, "email") as string);
         params.DesiredDeliveryMediums = ["EMAIL"];
       } else if (
         UsernameAttributes.some(
