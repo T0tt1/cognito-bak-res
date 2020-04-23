@@ -10,15 +10,23 @@
   "commit": false,
   "contributors": [
         {
-      "login": "ashishkujoy",
-      "name": "ashish kumar ",
+      "login": "t0tt1",
+      "name": "Todor Todorov",
       "avatar_url": "https://avatars2.githubusercontent.com/u/49184867?s=460&u=3727c81a011775d9479cd40e1ce7cbfcb36e19f6&v=4",
       "profile": "https://github.com/T0tt1",
       "contributions": [
-        "doc",
+        "doc"
+      ]
+    }, 
+    {
+      "login": "yavorss",
+      "name": "Yavor Stoychev",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/16567086?s=460&u=30627428758cbe90d2e5bc9169bbb9cf37fc44a0&v=4",
+      "profile": "https://github.com/yavorss",
+      "contributions": [
         "code"
       ]
-    }
+    } 
   ],
   "contributorsPerLine": 1,
   "skipCi": true

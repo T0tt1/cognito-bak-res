@@ -1,5 +1,5 @@
 # cognito-bak-res
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 
 AIO Tool for backing up and restoring AWS Cognito User Pools
 
@@ -70,21 +70,23 @@ cbr <command> [options]
 >
 > `--delay`: delay in millis between alternate users batch(60) backup, to avoid rate limit error.
 
-![Image showing CLI Usage](gifs/demo.png "CLI Usage")
 
 - **Backup**
   ```shell
   cbr backup
   cbr backup <options>
   ```
+  Example: cognito-bak-res backup --pool us-east-1_XXXxxxxX --key YourProgramaticKeyForAWS --secret YourProgramatciSecretForAWS --r us-east-1 --dir .
+  ```
   `--directory` option is available to export json data to.
 
-  ![GIF for using Backup CLI](gifs/backup-min.gif "Backup Demo")
 
 - **Restore**
   ```shell
   cbr restore
   cbr restore <options>
+  ```
+  Example: cognito-bak-res restore --pool us-east-1_XXXxxxxX --key YourProgramaticKeyForAWS --secret YourProgramatciSecretForAWS --r us-east-1 --file .\us-east-1_YYyyyyyyyy.json
   ```
   `--file` option is available to read the json file to import from.
 
@@ -92,7 +94,6 @@ cbr <command> [options]
 
   `--pwdModule` option is available to make use of custom logic to generate password. If not provided, cognito generated password will be used and email will be sent to the users with One Time Password, unless `--pwd` is used. Make sure to pass absolute path of the file. Refer [this](https://github.com/rahulpsd18/cognito-bak-res/pull/1).
 
-  ![GIF for using Restore CLI](gifs/restore-min.gif "Restore Demo")
 
 **In case any of the required option is missing, a interactive command line user interface kicks in to select from.**
 
@@ -101,9 +102,8 @@ cbr <command> [options]
 - [X] ~~Fine tune the backup process~~
 - [X] ~~Implement Restore~~
 - [X] ~~Write detailed Readme with examples~~
-- [ ] Convert JSON to CSV
-- [ ] Implement Amazon Cognito User Pool Import Job
-- [ ] AWS Cross-Region Cognito Replication
+- [X] ~~Restore Users together with Groups where they were members of~~
+
 
 ## Contributors
 
@@ -114,12 +114,8 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/all-contri
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/adityamedhe-cc"><img src="https://avatars1.githubusercontent.com/u/30614870?v=4" width="100px;" alt=""/><br /><sub><b>adityamedhe-cc</b></sub></a><br /><a href="https://github.com/rahulpsd18/cognito-bak-res/commits?author=adityamedhe-cc" title="Documentation">📖</a> <a href="https://github.com/rahulpsd18/cognito-bak-res/commits?author=adityamedhe-cc" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/juno-visualsquares"><img src="https://avatars1.githubusercontent.com/u/18159739?v=4" width="100px;" alt=""/><br /><sub><b>juno-visualsquares</b></sub></a><br /><a href="https://github.com/rahulpsd18/cognito-bak-res/commits?author=juno-visualsquares" title="Code">💻</a> <a href="#ideas-juno-visualsquares" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="http://www.carbonatethis.com"><img src="https://avatars2.githubusercontent.com/u/1521394?v=4" width="100px;" alt=""/><br /><sub><b>Charlie Brown</b></sub></a><br /><a href="https://github.com/rahulpsd18/cognito-bak-res/issues?q=author%3Acarbonrobot" title="Bug reports">🐛</a></td>
-    <td align="center"><a href="http://gardlabs.com"><img src="https://avatars3.githubusercontent.com/u/32401961?v=4" width="100px;" alt=""/><br /><sub><b>Alvaro Del Valle</b></sub></a><br /><a href="#question-alvarodelvalle" title="Answering Questions">💬</a></td>
-    <td align="center"><a href="http://blog.v-lad.org"><img src="https://avatars2.githubusercontent.com/u/36257?v=4" width="100px;" alt=""/><br /><sub><b>Vlad Korolev</b></sub></a><br /><a href="https://github.com/rahulpsd18/cognito-bak-res/commits?author=vladistan" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/ashishkujoy"><img src="https://avatars2.githubusercontent.com/u/34642693?v=4" width="100px;" alt=""/><br /><sub><b>ashish kumar </b></sub></a><br /><a href="https://github.com/rahulpsd18/cognito-bak-res/commits?author=ashishkujoy" title="Documentation">📖</a> <a href="https://github.com/rahulpsd18/cognito-bak-res/commits?author=ashishkujoy" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/yavorss"><img src="https://avatars1.githubusercontent.com/u/16567086?s=460&u=30627428758cbe90d2e5bc9169bbb9cf37fc44a0&v=4" width="100px;" alt=""/><br /><sub><b>Yavor Stoychev</b></sub></a><br /><a href="https://github.com/T0tt1/cognito-bak-res/commits?author=t0tt1" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/t0tt1"><img src="https://avatars2.githubusercontent.com/u/49184867?s=460&u=3727c81a011775d9479cd40e1ce7cbfcb36e19f6&v=4" width="100px;" alt=""/><br /><sub><b>juno-visualsquares</b></sub></a><br /><a href="https://github.com/T0tt1/cognito-bak-res/commits?author=t0tt1" title="Documentation">📖</a> <a href="#ideas-totti" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
