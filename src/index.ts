@@ -123,7 +123,7 @@ export const restoreUsers = async (
 
       // Set Username as an email if UsernameAttributes of UserPool contains an email
       if (
-        UsernameAttributes.some(
+        attributes.some(
           (Attributes: any) => Attributes.Name === "email"
         )
       ) {
