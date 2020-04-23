@@ -168,6 +168,11 @@ export const restoreUsers = async (
         await wrapped();
         await Promise.all(
           user.Groups.map((group: any) => {
+            console.log('Here!', {
+              GroupName: group.GroupName,
+              Username: user.UserName,
+              UserPoolId: group.UserPoolId,
+            })
             return cognito
               .adminAddUserToGroup({
                 GroupName: group.GroupName,
