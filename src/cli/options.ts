@@ -58,7 +58,7 @@ const verifyOptions = async () => {
 
     // choose your profile from available AWS profiles if not passed through CLI
     // only shown in case when no valid profile or no key && secret is passed.
-    if (!savedAWSProfiles.includes(profile) && (!key || !secret)) {
+    if (!savedAWSProfiles.includes(profile) || (!key && !secret)) {
         const awsProfileChoice = await inquirer.prompt({
             type: 'autocomplete',
             name: 'selected',
