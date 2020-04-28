@@ -82,12 +82,15 @@ const verifyOptions = async () => {
     };
 
     if (!userpool) {
+        console.log ('Starting AWS CLI auth')
         // update the config of aws-sdk based on profile/credentials passed
         AWS.config.update({ region });
 
         if (profile) {
+            console.log ('Working with Profile')
             AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile });
         } else if (key && secret) {
+            console.log ('Working with Key and Secret')
             AWS.config.credentials = new AWS.Credentials({
                 accessKeyId: key, secretAccessKey: secret
             });

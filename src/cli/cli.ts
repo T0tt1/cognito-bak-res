@@ -18,12 +18,9 @@ const orange = chalk.keyword('orange');
 
         // update the config of aws-sdk based on profile/credentials passed
         AWS.config.update({ region });
-console.log ('Starting AWS CLI auth')
         if (profile) {
             AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile });
-            console.log ('Working with Profile')
         } else if (key && secret) {
-            console.log ('Working with Key and Secret')
             AWS.config.credentials = new AWS.Credentials({
                 accessKeyId: key, secretAccessKey: secret
             });
