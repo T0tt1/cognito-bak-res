@@ -151,6 +151,8 @@ const verifyOptions = async () => {
     } as inquirer.Question);
 
     region = awsRegionChoice.selected;
+  } else {
+    AWS.config.update({region: region });
   }
 
   // update the config of aws-sdk based on profile/credentials passed
