@@ -51,6 +51,7 @@ export const backupUsers = async (
           .listUsers(params)
           .promise();
 
+        console.log ('Catch what is inside the array.')
         console.log(Users);
         console.log(await cognito.listUsers(params).promise());
         await Promise.all(
