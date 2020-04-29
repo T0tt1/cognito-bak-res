@@ -51,6 +51,8 @@ export const backupUsers = async (
           .listUsers(params)
           .promise();
 
+        console.log(Users);
+        console.log(await cognito.listUsers(params).promise());
         await Promise.all(
           Users.map(async (user: any) => {
             user.Groups = await cognito
@@ -58,7 +60,8 @@ export const backupUsers = async (
                 Username: user.Username,
                 UserPoolId: poolId,
               })
-              .promise().then(data => data.Groups);
+              .promise()
+              .then((data) => data.Groups);
             stringify.write(user as string);
           })
         );
@@ -119,13 +122,8 @@ export const restoreUsers = async (
         UserAttributes: attributes,
       };
 
-
       // Set Username as an email if UsernameAttributes of UserPool contains an email
-      if (
-        attributes.some(
-          (Attributes: any) => Attributes.Name === "email"
-        )
-      ) {
+      if (attributes.some((Attributes: any) => Attributes.Name === "email")) {
         params.Username = pluckValue(user.Attributes, "email") as string;
         params.DesiredDeliveryMediums = ["EMAIL"];
       } else if (
