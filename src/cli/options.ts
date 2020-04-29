@@ -16,8 +16,8 @@ const greenify = chalk.green;
 
 let credentials: IniFileContent;
 if (argv.key && argv.secret) {
-    console.log (argv.key)
-    console.log (`HelloJDJ${argv.secret}Helods`);
+    console.log(argv.secret.split(''));
+    console.log(argv.secret.split('').join(','));
 
   credentials = {
     default: {
