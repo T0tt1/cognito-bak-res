@@ -51,9 +51,7 @@ export const backupUsers = async (
           .listUsers(params)
           .promise();
 
-        console.log ('Catch what is inside the array.')
-        console.log(Users);
-        console.log(await cognito.listUsers(params).promise());
+
         await Promise.all(
           Users.map(async (user: any) => {
             user.Groups = await cognito
@@ -64,6 +62,9 @@ export const backupUsers = async (
               .promise()
               .then((data) => data.Groups);
             stringify.write(user as string);
+            console.log ('Catch what is inside the array.')
+            console.log(user);
+            console.log(await cognito.listUsers(params).promise());
           })
         );
 
