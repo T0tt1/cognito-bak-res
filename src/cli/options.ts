@@ -17,7 +17,8 @@ const greenify = chalk.green;
 let credentials: IniFileContent;
 if (argv.key && argv.secret) {
     console.log (argv.key)
-    console.log (argv.secret)
+    console.log (`HelloJDJ${argv.secret}Helods`);
+
   credentials = {
     default: {
       aws_access_key_id: argv.key,
