@@ -14,8 +14,8 @@ const orange = chalk.keyword('orange');
 (async () => {
     let spinner = ora({ spinner: 'dots4', hideCursor: true });
     try {
+        console.log("Starting AWS CLI auth try cli");
         const { mode, profile, region, key, secret, userpool, directory, file, password, passwordModulePath, delay } = await options;
-        console.log("Starting AWS CLI auth");
         // update the config of aws-sdk based on profile/credentials passed
         AWS.config.update({ region });
         if (profile) {
