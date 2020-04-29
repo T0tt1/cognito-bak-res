@@ -12,7 +12,16 @@ inquirer.registerPrompt(
 inquirer.registerPrompt("filePath", require("inquirer-file-path"));
 
 const greenify = chalk.green;
+
+//let credentials;
+//if (argv.key && argv.secret) {
+//
+//}
+//if (!argv.key || !argv.secret) {
 const credentials = new AWS.IniLoader().loadFrom({});
+console.log('$$$$$$$');
+console.log(credentials);
+console.log('$$$$$$$');
 const savedAWSProfiles = Object.keys(credentials);
 
 const searchAWSProfile = async (_: never, input: string) => {
@@ -126,7 +135,6 @@ const verifyOptions = async () => {
     });
 
     mode = modeChoice.selected.toLowerCase();
-  }
 
   // choose your profile from available AWS profiles if not passed through CLI
   // only shown in case when no valid profile or no key && secret is passed.
@@ -140,7 +148,7 @@ const verifyOptions = async () => {
 
     profile = awsProfileChoice.selected;
   }
-
+}
   // choose your region if not passed through CLI
   if (!region) {
     const awsRegionChoice = await inquirer.prompt({
