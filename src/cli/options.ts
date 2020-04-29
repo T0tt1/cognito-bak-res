@@ -3,6 +3,7 @@ import * as fuzzy from "fuzzy";
 import * as inquirer from "inquirer";
 import chalk from "chalk";
 import { argv } from "./args";
+import { IniFileContent } from "aws-sdk/lib/shared-ini/ini-loader";
 
 inquirer.registerPrompt("directory", require("inquirer-select-directory"));
 inquirer.registerPrompt(
@@ -13,15 +14,18 @@ inquirer.registerPrompt("filePath", require("inquirer-file-path"));
 
 const greenify = chalk.green;
 
-//let credentials;
-//if (argv.key && argv.secret) {
-//
-//}
-//if (!argv.key || !argv.secret) {
-const credentials = new AWS.IniLoader().loadFrom({});
-console.log('$$$$$$$');
-console.log(credentials);
-console.log('$$$$$$$');
+let credentials: IniFileContent;
+if (argv.key && argv.secret) {
+  credentials = {
+    default: {
+      aws_access_key_id: argv.key,
+      aws_secret_access_key: argv.secret,
+    },
+  };
+} else {
+  credentials = new AWS.IniLoader().loadFrom({});
+}
+
 const savedAWSProfiles = Object.keys(credentials);
 
 const searchAWSProfile = async (_: never, input: string) => {
@@ -136,19 +140,19 @@ const verifyOptions = async () => {
 
     mode = modeChoice.selected.toLowerCase();
 
-  // choose your profile from available AWS profiles if not passed through CLI
-  // only shown in case when no valid profile or no key && secret is passed.
-  if (!savedAWSProfiles.includes(profile) || (!key && !secret)) {
-    const awsProfileChoice = await inquirer.prompt({
-      type: "autocomplete",
-      name: "selected",
-      message: "Choose your AWS Profile",
-      source: searchAWSProfile,
-    } as inquirer.Question);
+    // choose your profile from available AWS profiles if not passed through CLI
+    // only shown in case when no valid profile or no key && secret is passed.
+    if (!savedAWSProfiles.includes(profile) || (!key && !secret)) {
+      const awsProfileChoice = await inquirer.prompt({
+        type: "autocomplete",
+        name: "selected",
+        message: "Choose your AWS Profile",
+        source: searchAWSProfile,
+      } as inquirer.Question);
 
-    profile = awsProfileChoice.selected;
+      profile = awsProfileChoice.selected;
+    }
   }
-}
   // choose your region if not passed through CLI
   if (!region) {
     const awsRegionChoice = await inquirer.prompt({
@@ -160,7 +164,7 @@ const verifyOptions = async () => {
 
     region = awsRegionChoice.selected;
   } else {
-    AWS.config.update({region: region });
+    AWS.config.update({ region: region });
   }
 
   // update the config of aws-sdk based on profile/credentials passed
@@ -176,7 +180,6 @@ const verifyOptions = async () => {
     });
   }
   if (!userpool) {
-
     AWS.config.update({ region });
 
     const cognitoISP = new AWS.CognitoIdentityServiceProvider();
