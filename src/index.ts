@@ -51,7 +51,8 @@ export const backupUsers = async (
           .listUsers(params)
           .promise();
 
-
+          console.log ('I am in try pagcall')
+          console.log (params.UserPoolId)
         await Promise.all(
           Users.map(async (user: any) => {
             user.Groups = await cognito
