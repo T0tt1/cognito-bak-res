@@ -80,11 +80,13 @@ console.log (params)
           await paginationCalls();
         }
       };
-
+console.log ('Check for delayDurationInMillis provided on command line')
       await paginationCalls();
+console.log ('await paginationCalls invoked already, follow catch/trhow')
     } catch (error) {
       throw error; // to be catched by calling function
     } finally {
+      console.log ('I am in Finally now')
       stringify.end();
       stringify.on("end", () => {
         writeStream.end();
