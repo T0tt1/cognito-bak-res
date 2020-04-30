@@ -32,6 +32,7 @@ export const backupUsers = async (
   }
 
   for (let poolId of userPoolList) {
+    console.log ('create directory if not exists')
     // create directory if not exists
     !fs.existsSync(directory) && fs.mkdirSync(directory);
 
@@ -40,11 +41,13 @@ export const backupUsers = async (
     const stringify = JSONStream.stringify();
 
     stringify.pipe(writeStream);
-
+console.log ('WriteStream is:')
+console.log (writeStream)
     const params: ListUsersRequestTypes = {
       UserPoolId: poolId,
     };
-
+console.log ('Display params')
+console.log (params)
     try {
       const paginationCalls = async () => {
         const { Users = [], PaginationToken } = await cognito

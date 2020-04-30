@@ -18,8 +18,10 @@ const orange = chalk.keyword('orange');
         // update the config of aws-sdk based on profile/credentials passed
         AWS.config.update({ region });
         if (profile) {
+            console.log ('Enter in PRofile if statement')
             AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile });
         } else if (key && secret) {
+            console.log ('Enter in key secret elif statement')
             AWS.config.credentials = new AWS.Credentials({
                 accessKeyId: key, secretAccessKey: secret
             });
