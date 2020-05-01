@@ -130,6 +130,7 @@ const verifyOptions = async () => {
     password,
     passwordModulePath,
     delay,
+    st,
   } = argv;
 
   // choose the mode if not passed through CLI or invalid is passed
@@ -177,6 +178,7 @@ const verifyOptions = async () => {
     AWS.config.credentials = new AWS.Credentials({
       accessKeyId: key,
       secretAccessKey: secret,
+      sessionToken: st || null,
     });
   }
   if (!userpool) {
@@ -262,6 +264,7 @@ const verifyOptions = async () => {
     }
   }
   return {
+    st,
     mode,
     profile,
     region,
