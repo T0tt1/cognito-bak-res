@@ -41,12 +41,12 @@ export const backupUsers = async (
     const stringify = JSONStream.stringify();
 
     stringify.pipe(writeStream);
-    console.log("WriteStream is:" + writeStream + "End of writestream");
-    console.log("Stringify is:" + stringify + "End of stringify");
+    console.log("WriteStream is:");
+    console.log("Stringify is:");
     const params: ListUsersRequestTypes = {
       UserPoolId: poolId,
     };
-    console.log("Display params" + params + "End of params");
+    console.log("Display params");
     console.log(
       "This is UserPoolId:" + UserPoolId + "And this is poolId:" + poolId
     );
@@ -60,12 +60,8 @@ export const backupUsers = async (
           .promise();
 
         console.log("I am in const Users and here is output of command");
-        console.log(await cognito.listUsers(params).promise());
-        console.log(
-          "params.UserPoolId is:" +
-            params.UserPoolId +
-            "end of params.UserPoolId"
-        );
+//        console.log(await cognito.listUsers(params).promise());
+        console.log("params.UserPoolId is:");
         await Promise.all(
           Users.map(async (user: any) => {
             user.Groups = await cognito
@@ -77,20 +73,7 @@ export const backupUsers = async (
               .then((data) => data.Groups);
             stringify.write(user as string);
             console.log(
-              "Catch what is inside the array Groups. We are still the try for paginationCalls" +
-                user.Groups +
-                "End of displaying user.Groups"
-            );
-            console.log(
-              "Still in the try, displaying result of await await cognito.adminListGroupsForUser({Username: user.Username, UserPoolId: poolId, })"
-            );
-            console.log(
-              cognito.adminListGroupsForUser({
-                Username: user.Username,
-                UserPoolId: poolId,
-              })
-            );
-            console.log("End of result");
+              "Catch what is inside the array Groups. We are still the try for paginationCalls");
           })
         );
         console.log("enter in if (PaginationToken)");
