@@ -41,21 +41,24 @@ export const backupUsers = async (
     const stringify = JSONStream.stringify();
 
     stringify.pipe(writeStream);
-console.log ('WriteStream is:')
-console.log (writeStream)
+console.log ("WriteStream is:" + writeStream + "End of writestream")
+console.log ("Stringify is:" + stringify + "End of stringify")
     const params: ListUsersRequestTypes = {
       UserPoolId: poolId,
     };
-console.log ('Display params')
-console.log (params)
+console.log ("Display params" + params + "End of params")
+console.log ("This is UserPoolId:" + UserPoolId + "And this is poolId:" + poolId)
+console.log ("I am preparing to enter in try")
     try {
+      console.log ("I am in try before paginationCalls")
       const paginationCalls = async () => {
         const { Users = [], PaginationToken } = await cognito
           .listUsers(params)
           .promise();
 
-          console.log ('I am in try pagcall')
-          console.log (params.UserPoolId)
+          console.log ('I am in const Users and here is output of command')
+          console.log (await cognito.listUsers(params).promise())
+          console.log ("params.UserPoolId is:" + params.UserPoolId + "end of params.UserPoolId")
         await Promise.all(
           Users.map(async (user: any) => {
             user.Groups = await cognito
@@ -66,19 +69,23 @@ console.log (params)
               .promise()
               .then((data) => data.Groups);
             stringify.write(user as string);
-            console.log ('Catch what is inside the array.')
-            console.log(user);
-            console.log(await cognito.listUsers(params).promise());
+            console.log ('Catch what is inside the array Groups. We are still the try for paginationCalls' + user.Groups + "End of displaying user.Groups")
+            console.log("Still in the try, displaying result of await await cognito.adminListGroupsForUser({Username: user.Username, UserPoolId: poolId, })")
+            console.log(cognito.adminListGroupsForUser({ Username: user.Username, UserPoolId: poolId, }))
+            console.log ("End of result");
           })
         );
-
+console.log ("enter in if (PaginationToken)")
         if (PaginationToken) {
           params.PaginationToken = PaginationToken;
           if (delayDurationInMillis > 0) {
             await delay(delayDurationInMillis);
           }
+          console.log ("await paginationCalls()")
           await paginationCalls();
+          console.log (" end of await paginationCalls()")
         }
+        console.log ("exit from if (PaginationToken)")
       };
 console.log ('Check for delayDurationInMillis provided on command line')
       await paginationCalls();
