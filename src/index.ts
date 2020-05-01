@@ -32,7 +32,7 @@ export const backupUsers = async (
   }
 
   for (let poolId of userPoolList) {
-    console.log ('create directory if not exists')
+    console.log("create directory if not exists");
     // create directory if not exists
     !fs.existsSync(directory) && fs.mkdirSync(directory);
 
@@ -41,24 +41,31 @@ export const backupUsers = async (
     const stringify = JSONStream.stringify();
 
     stringify.pipe(writeStream);
-console.log ("WriteStream is:" + writeStream + "End of writestream")
-console.log ("Stringify is:" + stringify + "End of stringify")
+    console.log("WriteStream is:" + writeStream + "End of writestream");
+    console.log("Stringify is:" + stringify + "End of stringify");
     const params: ListUsersRequestTypes = {
       UserPoolId: poolId,
     };
-console.log ("Display params" + params + "End of params")
-console.log ("This is UserPoolId:" + UserPoolId + "And this is poolId:" + poolId)
-console.log ("I am preparing to enter in try")
+    console.log("Display params" + params + "End of params");
+    console.log(
+      "This is UserPoolId:" + UserPoolId + "And this is poolId:" + poolId
+    );
+    console.log("I am preparing to enter in try");
     try {
-      console.log ("I am in try before paginationCalls")
+      console.log("I am in try before paginationCalls");
       const paginationCalls = async () => {
+        console.log('I am in the pagination function');
         const { Users = [], PaginationToken } = await cognito
           .listUsers(params)
           .promise();
 
-          console.log ('I am in const Users and here is output of command')
-          console.log (await cognito.listUsers(params).promise())
-          console.log ("params.UserPoolId is:" + params.UserPoolId + "end of params.UserPoolId")
+        console.log("I am in const Users and here is output of command");
+        console.log(await cognito.listUsers(params).promise());
+        console.log(
+          "params.UserPoolId is:" +
+            params.UserPoolId +
+            "end of params.UserPoolId"
+        );
         await Promise.all(
           Users.map(async (user: any) => {
             user.Groups = await cognito
@@ -69,31 +76,42 @@ console.log ("I am preparing to enter in try")
               .promise()
               .then((data) => data.Groups);
             stringify.write(user as string);
-            console.log ('Catch what is inside the array Groups. We are still the try for paginationCalls' + user.Groups + "End of displaying user.Groups")
-            console.log("Still in the try, displaying result of await await cognito.adminListGroupsForUser({Username: user.Username, UserPoolId: poolId, })")
-            console.log(cognito.adminListGroupsForUser({ Username: user.Username, UserPoolId: poolId, }))
-            console.log ("End of result");
+            console.log(
+              "Catch what is inside the array Groups. We are still the try for paginationCalls" +
+                user.Groups +
+                "End of displaying user.Groups"
+            );
+            console.log(
+              "Still in the try, displaying result of await await cognito.adminListGroupsForUser({Username: user.Username, UserPoolId: poolId, })"
+            );
+            console.log(
+              cognito.adminListGroupsForUser({
+                Username: user.Username,
+                UserPoolId: poolId,
+              })
+            );
+            console.log("End of result");
           })
         );
-console.log ("enter in if (PaginationToken)")
+        console.log("enter in if (PaginationToken)");
         if (PaginationToken) {
           params.PaginationToken = PaginationToken;
           if (delayDurationInMillis > 0) {
             await delay(delayDurationInMillis);
           }
-          console.log ("await paginationCalls()")
+          console.log("await paginationCalls()");
           await paginationCalls();
-          console.log (" end of await paginationCalls()")
+          console.log(" end of await paginationCalls()");
         }
-        console.log ("exit from if (PaginationToken)")
+        console.log("exit from if (PaginationToken)");
       };
-console.log ('Check for delayDurationInMillis provided on command line')
-      await paginationCalls();
-console.log ('await paginationCalls invoked already, follow catch/trhow')
+      console.log("Check for delayDurationInMillis provided on command line");
+      await paginationCalls().catch(error => console.log(error));
+      console.log("await paginationCalls invoked already, follow catch/trhow");
     } catch (error) {
       throw error; // to be catched by calling function
     } finally {
-      console.log ('I am in Finally now')
+      console.log("I am in Finally now");
       stringify.end();
       stringify.on("end", () => {
         writeStream.end();
