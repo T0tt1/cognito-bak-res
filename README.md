@@ -88,7 +88,7 @@ cbr <command> [options]
   cbr restore
   cbr restore <options>
   ```
-  <b>Example:</b><br> cognito-bak-res restore --pool <i>us-east-1_XXXxxxxX</i> --key <i>YourProgramaticKeyForAWS</i> --secret <i>YourProgramatciSecretForAWS</i> --r <i>us-east-1</i> --file <i>.\us-east-1_YYyyyyyyyy.json</i> --st <i>YourSessionToken</i> --delay <i>10000</i>
+  <b>Example:</b><br> cognito-bak-res restore --pool <i>us-east-1_XXXxxxxX</i> --key <i>YourProgramaticKeyForAWS</i> --secret <i>YourProgramatciSecretForAWS</i> --r <i>us-east-1</i> --file <i>./us-east-1_YYyyyyyyyy.json</i> --st <i>YourSessionToken</i> --delay <i>10000</i>
   ```
   `--file` option is available to read the json file to import from.
 
