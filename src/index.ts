@@ -45,13 +45,10 @@ export const backupUsers = async (
       UserPoolId: poolId,
     };
     try {
-
       const paginationCalls = async () => {
-
         const { Users = [], PaginationToken } = await cognito
           .listUsers(params)
           .promise();
-
 
         await Promise.all(
           Users.map(async (user: any) => {
@@ -63,7 +60,6 @@ export const backupUsers = async (
               .promise()
               .then((data) => data.Groups);
             stringify.write(user as string);
-
           })
         );
         if (PaginationToken) {
@@ -75,12 +71,10 @@ export const backupUsers = async (
         }
       };
 
-      await paginationCalls().catch(error => console.log(error));
-
+      await paginationCalls().catch((error) => console.log(error));
     } catch (error) {
       throw error; // to be catched by calling function
     } finally {
-
       stringify.end();
       stringify.on("end", () => {
         writeStream.end();
