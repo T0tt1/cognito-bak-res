@@ -1,13 +1,14 @@
-import * as yargs from "yargs";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 import chalk from "chalk";
 
 const dimmed = chalk.dim;
 const greyed = chalk.gray;
 const bold = chalk.bold;
 
-const version = require("../../package").version;
+const version = require("../../package.json").version;
 
-export const argv = yargs
+export const argv = yargs(hideBin(process.argv))
   // header
   .usage(
     `\nYou can run commands with "cognito-backup-restore" or the shortcut "cbr"\n
@@ -136,7 +137,8 @@ export const argv = yargs
 
   // footer
   .epilog(
-    dimmed`\nPlease report any issues/suggestions here:\nhttps://github.com/rahulpsd18/cognito-backup-restore/issues\n`
+    dimmed`\nPlease report any issues/suggestions here:\nhttps://github.com/T0tt1/cognito-bak-res/issues\n`
   )
   .strict()
-  .wrap(Math.min(120, yargs.terminalWidth())).argv;
+  .wrap(Math.min(120, yargs.terminalWidth()))
+  .parseSync();

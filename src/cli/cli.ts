@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
-import * as AWS from "aws-sdk";
-import * as ora from "ora";
+import {
+  CognitoIdentityProviderClient,
+} from "@aws-sdk/client-cognito-identity-provider";
+import { fromIni } from "@aws-sdk/credential-providers";
+import ora from "ora";
 
 import chalk from "chalk";
 import { backupUsers, restoreUsers } from "../index";
@@ -28,30 +31,32 @@ const orange = chalk.keyword("orange");
       delay,
       st,
     } = await options;
-    // update the config of aws-sdk based on profile/credentials passed
-    AWS.config.update({ region });
+
+    // Build client configuration
+    const clientConfig: any = { region };
+
     if (profile) {
-      AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile });
+      clientConfig.credentials = fromIni({ profile });
     } else if (key && secret) {
-      AWS.config.credentials = new AWS.Credentials({
+      clientConfig.credentials = {
         accessKeyId: key,
         secretAccessKey: secret,
-        sessionToken: st || null,
-      });
+        sessionToken: st || undefined,
+      };
     }
 
-    const cognitoISP = new AWS.CognitoIdentityServiceProvider();
+    const cognitoISP = new CognitoIdentityProviderClient(clientConfig);
 
     if (mode === "backup") {
       spinner = spinner.start(orange`Backing up userpool`);
-      await backupUsers(cognitoISP, userpool, directory, delay);
+      await backupUsers(cognitoISP, userpool as string, directory as string, delay);
       spinner.succeed(green(`JSON Exported successfully to ${directory}/\n`));
     } else if (mode === "restore") {
       spinner = spinner.start(orange`Restoring userpool`);
       await restoreUsers(
         cognitoISP,
-        userpool,
-        file,
+        userpool as string,
+        file as string,
         password,
         passwordModulePath
       );
@@ -61,7 +66,7 @@ const orange = chalk.keyword("orange");
         red`Mode passed is invalid, please make sure a valid command is passed here.\n`
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     spinner.fail(red(error.message));
   }
 })();
