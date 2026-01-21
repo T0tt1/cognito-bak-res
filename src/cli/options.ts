@@ -1,9 +1,13 @@
-import * as AWS from "aws-sdk";
+import {
+  CognitoIdentityProviderClient,
+  ListUserPoolsCommand,
+} from "@aws-sdk/client-cognito-identity-provider";
+import { fromIni } from "@aws-sdk/credential-providers";
+import { parseKnownFiles } from "@smithy/shared-ini-file-loader";
 import * as fuzzy from "fuzzy";
 import * as inquirer from "inquirer";
 import chalk from "chalk";
 import { argv } from "./args";
-import { IniFileContent } from "aws-sdk/lib/shared-ini/ini-loader";
 
 inquirer.registerPrompt("directory", require("inquirer-select-directory"));
 inquirer.registerPrompt(
@@ -14,26 +18,23 @@ inquirer.registerPrompt("filePath", require("inquirer-file-path"));
 
 const greenify = chalk.green;
 
-let credentials: IniFileContent;
-if (argv.key && argv.secret) {
-  credentials = {
-    default: {
-      aws_access_key_id: argv.key,
-      aws_secret_access_key: argv.secret,
-    },
+const loadCredentialProfiles = async (): Promise<string[]> => {
+  try {
+    const profiles = await parseKnownFiles({});
+    return Object.keys(profiles);
+  } catch {
+    return ["default"];
+  }
+};
+
+const searchAWSProfile = (savedAWSProfiles: string[]) => {
+  return async (_: never, input: string) => {
+    input = input || "";
+    const fuzzyResult = fuzzy.filter(input, savedAWSProfiles);
+    return fuzzyResult.map((el) => {
+      return el.original;
+    });
   };
-} else {
-  credentials = new AWS.IniLoader().loadFrom({});
-}
-
-const savedAWSProfiles = Object.keys(credentials);
-
-const searchAWSProfile = async (_: never, input: string) => {
-  input = input || "";
-  const fuzzyResult = fuzzy.filter(input, savedAWSProfiles);
-  return fuzzyResult.map((el) => {
-    return el.original;
-  });
 };
 
 const searchCognitoRegion = async (_: never, input: string) => {
@@ -130,6 +131,8 @@ const verifyOptions = async () => {
     st,
   } = argv;
 
+  const savedAWSProfiles = await loadCredentialProfiles();
+
   // choose the mode if not passed through CLI or invalid is passed
   if (!mode || !["restore", "backup"].includes(mode)) {
     const modeChoice = await inquirer.prompt<{ selected: string }>({
@@ -148,7 +151,7 @@ const verifyOptions = async () => {
         type: "autocomplete",
         name: "selected",
         message: "Choose your AWS Profile",
-        source: searchAWSProfile,
+        source: searchAWSProfile(savedAWSProfiles),
       } as inquirer.Question);
 
       profile = awsProfileChoice.selected;
@@ -164,27 +167,27 @@ const verifyOptions = async () => {
     } as inquirer.Question);
 
     region = awsRegionChoice.selected;
-  } else {
-    AWS.config.update({ region: region });
   }
 
-  // update the config of aws-sdk based on profile/credentials passed
+  // Build client configuration for Cognito operations
+  const clientConfig: any = { region };
+
   if (profile) {
-    AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile });
+    clientConfig.credentials = fromIni({ profile });
   } else if (key && secret) {
-    AWS.config.credentials = new AWS.Credentials({
+    clientConfig.credentials = {
       accessKeyId: key,
       secretAccessKey: secret,
-      sessionToken: st || null,
-    });
+      sessionToken: st || undefined,
+    };
   }
-  if (!userpool) {
-    AWS.config.update({ region });
 
-    const cognitoISP = new AWS.CognitoIdentityServiceProvider();
-    const { UserPools } = await cognitoISP
-      .listUserPools({ MaxResults: 60 })
-      .promise();
+  if (!userpool) {
+    const cognitoISP = new CognitoIdentityProviderClient(clientConfig);
+    const response = await cognitoISP.send(
+      new ListUserPoolsCommand({ MaxResults: 60 })
+    );
+    const UserPools = response.UserPools;
     // TODO: handle data.NextToken when exceeding the MaxResult limit
 
     const userPoolList =

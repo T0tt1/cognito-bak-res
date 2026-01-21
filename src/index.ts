@@ -1,18 +1,24 @@
 import * as fs from "fs";
 import * as path from "path";
-import * as AWS from "aws-sdk";
+import {
+  CognitoIdentityProviderClient,
+  ListUserPoolsCommand,
+  ListUsersCommand,
+  AdminListGroupsForUserCommand,
+  DescribeUserPoolCommand,
+  AdminCreateUserCommand,
+  AdminAddUserToGroupCommand,
+  ListUsersCommandInput,
+  AdminCreateUserCommandInput,
+  AttributeType,
+} from "@aws-sdk/client-cognito-identity-provider";
 import Bottleneck from "bottleneck";
-import * as delay from "delay";
+import delay from "delay";
 
 const JSONStream = require("JSONStream");
 
-type CognitoISP = AWS.CognitoIdentityServiceProvider;
-type ListUsersRequestTypes = AWS.CognitoIdentityServiceProvider.Types.ListUsersRequest;
-type AdminCreateUserRequest = AWS.CognitoIdentityServiceProvider.Types.AdminCreateUserRequest;
-type AttributeType = AWS.CognitoIdentityServiceProvider.Types.AttributeType;
-
 export const backupUsers = async (
-  cognito: CognitoISP,
+  cognito: CognitoIdentityProviderClient,
   UserPoolId: string,
   directory: string,
   delayDurationInMillis: number = 0
@@ -21,9 +27,10 @@ export const backupUsers = async (
 
   if (UserPoolId == "all") {
     // TODO: handle data.NextToken when exceeding the MaxResult limit
-    const { UserPools } = await cognito
-      .listUserPools({ MaxResults: 60 })
-      .promise();
+    const response = await cognito.send(
+      new ListUserPoolsCommand({ MaxResults: 60 })
+    );
+    const UserPools = response.UserPools;
     userPoolList = userPoolList.concat(
       UserPools && (UserPools.map((el) => el.Id as string) as any)
     );
@@ -41,24 +48,24 @@ export const backupUsers = async (
 
     stringify.pipe(writeStream);
 
-    const params: ListUsersRequestTypes = {
+    const params: ListUsersCommandInput = {
       UserPoolId: poolId,
     };
     try {
       const paginationCalls = async () => {
-        const { Users = [], PaginationToken } = await cognito
-          .listUsers(params)
-          .promise();
+        const response = await cognito.send(new ListUsersCommand(params));
+        const Users = response.Users || [];
+        const PaginationToken = response.PaginationToken;
 
         await Promise.all(
           Users.map(async (user: any) => {
-            user.Groups = await cognito
-              .adminListGroupsForUser({
+            const groupsResponse = await cognito.send(
+              new AdminListGroupsForUserCommand({
                 Username: user.Username,
                 UserPoolId: poolId,
               })
-              .promise()
-              .then((data) => data.Groups);
+            );
+            user.Groups = groupsResponse.Groups;
             stringify.write(user as string);
           })
         );
@@ -84,7 +91,7 @@ export const backupUsers = async (
 };
 
 export const restoreUsers = async (
-  cognito: CognitoISP,
+  cognito: CognitoIdentityProviderClient,
   UserPoolId: string,
   file: string,
   password?: string,
@@ -98,7 +105,10 @@ export const restoreUsers = async (
     pwdModule = require(passwordModulePath);
   }
 
-  const { UserPool } = await cognito.describeUserPool({ UserPoolId }).promise();
+  const response = await cognito.send(
+    new DescribeUserPoolCommand({ UserPoolId })
+  );
+  const UserPool = response.UserPool;
   const UsernameAttributes = (UserPool && UserPool.UsernameAttributes) || [];
 
   const limiter = new Bottleneck({ minTime: 2000 });
@@ -112,7 +122,7 @@ export const restoreUsers = async (
         (attr: AttributeType) => attr.Name !== "sub"
       );
 
-      const params: AdminCreateUserRequest = {
+      const params: AdminCreateUserCommandInput = {
         UserPoolId,
         Username: user.Username,
         UserAttributes: attributes,
@@ -141,7 +151,7 @@ export const restoreUsers = async (
           params.MessageAction = "SUPPRESS";
           params.TemporaryPassword = pwdModule.getPwdForUsername(user.Username);
           specificPwdExistsForUser = true;
-        } catch (e) {
+        } catch (e: any) {
           console.error(
             `"${e.message}" error occurred for user "${params.Username}" while getting password from ${passwordModulePath}. Falling back to default.`
           );
@@ -152,23 +162,23 @@ export const restoreUsers = async (
         params.TemporaryPassword = password;
       }
       const wrapped = limiter.wrap(async () =>
-        cognito.adminCreateUser(params).promise()
+        cognito.send(new AdminCreateUserCommand(params))
       );
       try {
         await wrapped();
         await Promise.all(
           user.Groups.map((group: any) => {
-            return cognito
-              .adminAddUserToGroup({
+            return cognito.send(
+              new AdminAddUserToGroupCommand({
                 GroupName: group.GroupName,
                 Username: params.Username,
                 UserPoolId: params.UserPoolId,
               })
-              .promise();
+            );
           })
         );
-      } catch (e) {
-        if (e.code === "UsernameExistsException") {
+      } catch (e: any) {
+        if (e.name === "UsernameExistsException") {
           console.log(
             `Looks like user ${user.Username} already exists, ignoring.`
           );
