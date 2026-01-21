@@ -4,17 +4,15 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { fromIni } from "@aws-sdk/credential-providers";
 import { parseKnownFiles } from "@smithy/shared-ini-file-loader";
-import * as fuzzy from "fuzzy";
-import * as inquirer from "inquirer";
+import fuzzy from "fuzzy";
+import inquirer from "inquirer";
 import chalk from "chalk";
 import { argv } from "./args";
 
-inquirer.registerPrompt("directory", require("inquirer-select-directory"));
-inquirer.registerPrompt(
-  "autocomplete",
-  require("inquirer-autocomplete-prompt")
-);
-inquirer.registerPrompt("filePath", require("inquirer-file-path"));
+// @ts-ignore - no types available
+import autocompletePrompt from "inquirer-autocomplete-prompt";
+
+inquirer.registerPrompt("autocomplete", autocompletePrompt);
 
 const greenify = chalk.green;
 
@@ -28,7 +26,7 @@ const loadCredentialProfiles = async (): Promise<string[]> => {
 };
 
 const searchAWSProfile = (savedAWSProfiles: string[]) => {
-  return async (_: never, input: string) => {
+  return async (_: any, input: string) => {
     input = input || "";
     const fuzzyResult = fuzzy.filter(input, savedAWSProfiles);
     return fuzzyResult.map((el) => {
@@ -37,7 +35,7 @@ const searchAWSProfile = (savedAWSProfiles: string[]) => {
   };
 };
 
-const searchCognitoRegion = async (_: never, input: string) => {
+const searchCognitoRegion = async (_: any, input: string) => {
   input = input || "";
   const region = [
     {
@@ -116,20 +114,18 @@ const searchCognitoRegion = async (_: never, input: string) => {
 };
 
 const verifyOptions = async () => {
-  let {
-    mode,
-    profile,
-    region,
-    key,
-    secret,
-    userpool,
-    directory,
-    file,
-    password,
-    passwordModulePath,
-    delay,
-    st,
-  } = argv;
+  let mode = argv.mode as string | undefined;
+  let profile = argv.profile as string;
+  let region = argv.region as string | undefined;
+  let key = argv.key as string | undefined;
+  let secret = argv.secret as string | undefined;
+  let userpool = argv.userpool as string | undefined;
+  let directory = argv.directory as string | undefined;
+  let file = argv.file as string | undefined;
+  let password = argv.password as string | undefined;
+  let passwordModulePath = argv.passwordModulePath as string | undefined;
+  let delay = argv.delay as number | undefined;
+  let st = argv.st as string | undefined;
 
   const savedAWSProfiles = await loadCredentialProfiles();
 
@@ -147,24 +143,24 @@ const verifyOptions = async () => {
     // choose your profile from available AWS profiles if not passed through CLI
     // only shown in case when no valid profile or no key && secret is passed.
     if (!savedAWSProfiles.includes(profile) || (!key && !secret)) {
-      const awsProfileChoice = await inquirer.prompt({
+      const awsProfileChoice = await inquirer.prompt<{ selected: string }>({
         type: "autocomplete",
         name: "selected",
         message: "Choose your AWS Profile",
         source: searchAWSProfile(savedAWSProfiles),
-      } as inquirer.Question);
+      } as any);
 
       profile = awsProfileChoice.selected;
     }
   }
   // choose your region if not passed through CLI
   if (!region) {
-    const awsRegionChoice = await inquirer.prompt({
+    const awsRegionChoice = await inquirer.prompt<{ selected: string }>({
       type: "autocomplete",
       name: "selected",
       message: "Choose your Cognito Region",
       source: searchCognitoRegion,
-    } as inquirer.Question);
+    } as any);
 
     region = awsRegionChoice.selected;
   }
@@ -206,7 +202,7 @@ const verifyOptions = async () => {
         value: "all",
       });
 
-    const searchCognitoPool = async (_: never, input: string) => {
+    const searchCognitoPool = async (_: any, input: string) => {
       input = input || "";
 
       const fuzzyResult = fuzzy.filter(input, userPoolList, {
@@ -218,35 +214,34 @@ const verifyOptions = async () => {
     };
 
     // choose your cognito pool from the region you selected
-    const cognitoPoolChoice = await inquirer.prompt({
+    const cognitoPoolChoice = await inquirer.prompt<{ selected: string }>({
       type: "autocomplete",
       name: "selected",
       message: "Choose your Cognito Pool",
       source: searchCognitoPool,
       pageSize: 60,
-    } as inquirer.Question);
+    } as any);
 
     userpool = cognitoPoolChoice.selected;
   }
 
   if (mode === "backup" && !directory) {
-    const directoryLocation = await inquirer.prompt({
-      type: "directory",
+    const directoryLocation = await inquirer.prompt<{ selected: string }>({
+      type: "input",
       name: "selected",
-      message: "Choose your file destination",
-      basePath: ".",
-    } as inquirer.Question);
+      message: "Enter the backup directory path:",
+      default: "./backup",
+    });
 
     directory = directoryLocation.selected;
   }
 
   if (mode === "restore" && !file) {
-    const fileLocation = await inquirer.prompt({
-      type: "filePath",
+    const fileLocation = await inquirer.prompt<{ selected: string }>({
+      type: "input",
       name: "selected",
-      message: "Choose the JSON file",
-      basePath: ".",
-    } as inquirer.Question);
+      message: "Enter the JSON backup file path:",
+    });
 
     file = fileLocation.selected;
   }

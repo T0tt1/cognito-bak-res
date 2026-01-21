@@ -49,14 +49,14 @@ const orange = chalk.keyword("orange");
 
     if (mode === "backup") {
       spinner = spinner.start(orange`Backing up userpool`);
-      await backupUsers(cognitoISP, userpool, directory, delay);
+      await backupUsers(cognitoISP, userpool as string, directory as string, delay);
       spinner.succeed(green(`JSON Exported successfully to ${directory}/\n`));
     } else if (mode === "restore") {
       spinner = spinner.start(orange`Restoring userpool`);
       await restoreUsers(
         cognitoISP,
-        userpool,
-        file,
+        userpool as string,
+        file as string,
         password,
         passwordModulePath
       );
